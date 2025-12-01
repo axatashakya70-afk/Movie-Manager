@@ -1,0 +1,36 @@
+/* Global Styles */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 20px;
+    background: linear-gradient(135deg, #0b1a33, #071021);
+    color: #e8eefd;
+}
+
+/* Headings */
+h1, h2 {
+    text-align: center;
+    color: #c8d8ff;
+    text-shadow: 0 0 8px rgba(80, 140, 255, 0.4);
+}
+
+/* Form & Movie Card */
+form, .movie-item {
+    background: rgba(15, 25, 50, 0.85);
+    padding: 20px;
+    margin: 20px auto;
+    width: 55%;
+    border-radius: 10px;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(50, 100, 255, 0.15);
+    border: 1px solid rgba(100, 140, 255, 0.2);
+}
+
+/* Inputs */
+input {
+    margin: 8px 5px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #2b3c57;
+    background: #0

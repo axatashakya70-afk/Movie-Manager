@@ -1,0 +1,28 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "Fast and Furious: Tokyo Drift",
+      "genre": "Sci-Fi/Car Action",
+      "year": 2006
+    },
+    {
+      "id": 2,
+      "title": "Zootopia",
+      "genre": "Crime",
+      "year": 2016
+    },
+    {
+      "id": 3,
+      "title": "Blended",
+      "genre": "Comedy",
+      "year": 2014
+    },
+    {
+      "id": "9268",
+      "title": "Homebound",
+      "genre": "Drama",
+      "year": 2025
+    }
+  ]
+}
