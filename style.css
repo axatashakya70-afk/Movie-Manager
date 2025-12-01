@@ -33,4 +33,48 @@ input {
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #2b3c57;
-    background: #0
+    background: #0d1a33;
+    color: #dbe6ff;
+    width: calc(100% - 40px);
+
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+input:focus {
+    outline: none;
+    border-color: #5c8bff;
+    box-shadow: 0 0 10px rgba(92, 139, 255, 0.7);
+}
+
+/* Buttons */
+button {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+
+    background: linear-gradient(135deg, #3b5cff, #2c44b8);
+    box-shadow: 0 4px 10px rgba(0, 0, 60, 0.4);
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #4c6aff, #3b5cff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 80, 0.6);
+}
+
+/* Movie Items */
+.movie-item {
+    color: #dfe8ff;
+}
+
+.movie-item:hover {
+    transform: translateY(-3px);
+    transition: 0.2s ease;
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.55),
+        0 0 20px rgba(70, 120, 255, 0.2);
+}

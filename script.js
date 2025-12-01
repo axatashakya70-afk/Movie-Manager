@@ -1,128 +1,77 @@
-const API_URL = 'http://localhost:3000/movies';
+const apiURL = "http://localhost:3000/movies";
 
-const movieListDiv = document.getElementById('movie-list');
-const searchInput = document.getElementById('search-input');
-const form = document.getElementById('add-movie-form');
+document.addEventListener("DOMContentLoaded", () => {
+    loadMovies();
 
-let allMovies = []; // full list stored here
+    document.getElementById("addMovieBtn").addEventListener("click", addMovie);
+    document.getElementById("search").addEventListener("input", filterMovies);
+});
 
-// Render movie list
-function renderMovies(moviesToDisplay) {
-    movieListDiv.innerHTML = '';
+// Load all movies
+function loadMovies() {
+    fetch(apiURL)
+        .then(res => res.json())
+        .then(data => displayMovies(data))
+        .catch(err => console.error("Fetch error:", err));
+}
 
-    if (moviesToDisplay.length === 0) {
-        movieListDiv.innerHTML = '<p>No movies found.</p>';
+// Add movie
+function addMovie() {
+    const title = document.getElementById("title").value;
+    const genre = document.getElementById("genre").value;
+    const year = document.getElementById("year").value;
+
+    if (!title || !genre || !year) {
+        alert("Fill all fields");
         return;
     }
 
-    moviesToDisplay.forEach(movie => {
-        const movieElement = document.createElement('div');
-        movieElement.classList.add('movie-item');
+    fetch(apiURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, genre, year })
+    }).then(() => {
+        loadMovies();
+        document.getElementById("title").value = "";
+        document.getElementById("genre").value = "";
+        document.getElementById("year").value = "";
+    });
+}
 
-        movieElement.innerHTML = `
-            <p><strong>${movie.title}</strong> (${movie.year}) - ${movie.genre}</p>
-            <button onclick="editMoviePrompt(${movie.id}, '${movie.title}', ${movie.year}, '${movie.genre}')">Edit</button>
-            <button onclick="deleteMovie(${movie.id})">Delete</button>
+// Delete movie
+function deleteMovie(id) {
+    fetch(`${apiURL}/${id}`, { method: "DELETE" })
+        .then(() => loadMovies())
+        .catch(err => console.error("Error deleting movie:", err));
+}
+
+// Show movie cards
+function displayMovies(movies) {
+    const container = document.getElementById("movieList");
+    container.innerHTML = "";
+
+    movies.forEach(movie => {
+        container.innerHTML += `
+            <div class="movie-item">
+                <h3>${movie.title}</h3>
+                <p><b>Genre:</b> ${movie.genre}</p>
+                <p><b>Year:</b> ${movie.year}</p>
+                <button onclick="deleteMovie(${movie.id})">Delete</button>
+            </div>
         `;
-
-        movieListDiv.appendChild(movieElement);
     });
 }
 
-// Fetch all movies (READ)
-function fetchMovies() {
-    fetch(API_URL)
-        .then(response => response.json())
-        .then(movies => {
-            allMovies = movies;
-            renderMovies(allMovies);
-        })
-        .catch(error => console.error('Error fetching movies:', error));
-}
+function filterMovies() {
+    const query = document.getElementById("search").value.toLowerCase();
 
-fetchMovies(); // initial load
-
-// Search functionality
-searchInput.addEventListener('input', function () {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    const filteredMovies = allMovies.filter(movie => {
-        return (
-            movie.title.toLowerCase().includes(searchTerm) ||
-            movie.genre.toLowerCase().includes(searchTerm)
-        );
-    });
-
-    renderMovies(filteredMovies);
-});
-
-// Add new movie (POST)
-form.addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const newMovie = {
-        title: document.getElementById('title').value,
-        genre: document.getElementById('genre').value,
-        year: parseInt(document.getElementById('year').value)
-    };
-
-    fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMovie),
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to add movie');
-            return response.json();
-        })
-        .then(() => {
-            form.reset();
-            fetchMovies();
-        })
-        .catch(error => console.error('Error adding movie:', error));
-});
-
-// Edit movie (prompt)
-function editMoviePrompt(id, currentTitle, currentYear, currentGenre) {
-    const newTitle = prompt('Enter new Title:', currentTitle);
-    const newYear = prompt('Enter new Year:', currentYear);
-    const newGenre = prompt('Enter new Genre:', currentGenre);
-
-    if (newTitle && newYear && newGenre) {
-        updateMovie(id, {
-            id: id,
-            title: newTitle,
-            year: parseInt(newYear),
-            genre: newGenre
+    fetch(apiURL)
+        .then(res => res.json())
+        .then(data => {
+            const filtered = data.filter(m =>
+                m.title.toLowerCase().includes(query) ||
+                m.genre.toLowerCase().includes(query)
+            );
+            displayMovies(filtered);
         });
-    }
-}
-
-// Update movie (PUT)
-function updateMovie(movieId, updatedMovieData) {
-    fetch(`${API_URL}/${movieId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedMovieData),
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to update movie');
-            return response.json();
-        })
-        .then(() => {
-            fetchMovies();
-        })
-        .catch(error => console.error('Error updating movie:', error));
-}
-
-// Delete movie (DELETE)
-function deleteMovie(movieId) {
-    fetch(`${API_URL}/${movieId}`, {
-        method: 'DELETE',
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to delete movie');
-            fetchMovies();
-        })
-        .catch(error => console.error('Error deleting movie:', error));
 }
