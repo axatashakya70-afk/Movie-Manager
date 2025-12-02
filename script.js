@@ -1,5 +1,3 @@
-const apiURL = "http://localhost:3000/movies";
-
 document.addEventListener("DOMContentLoaded", () => {
     loadMovies();
 
@@ -9,9 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Load all movies
 function loadMovies() {
-    fetch(apiURL)
+    fetch("movies.json")
         .then(res => res.json())
-        .then(data => displayMovies(data))
+        .then(data => displayMovies(data.movies))
         .catch(err => console.error("Fetch error:", err));
 }
 
@@ -26,22 +24,31 @@ function addMovie() {
         return;
     }
 
-    fetch(apiURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, genre, year })
-    }).then(() => {
-        loadMovies();
-        document.getElementById("title").value = "";
-        document.getElementById("genre").value = "";
-        document.getElementById("year").value = "";
-    });
+    fetch("movies.json")
+        .then(res => res.json())
+        .then(data => {
+            const newMovie = {
+                id: Date.now().toString(16),
+                title,
+                genre,
+                year
+            };
+            data.movies.push(newMovie);
+            displayMovies(data.movies);
+            document.getElementById("title").value = "";
+            document.getElementById("genre").value = "";
+            document.getElementById("year").value = "";
+        });
 }
 
 // Delete movie
 function deleteMovie(id) {
-    fetch(`${apiURL}/${id}`, { method: "DELETE" })
-        .then(() => loadMovies())
+    fetch("movies.json")
+        .then(res => res.json())
+        .then(data => {
+            data.movies = data.movies.filter(m => m.id !== id);
+            displayMovies(data.movies);
+        })
         .catch(err => console.error("Error deleting movie:", err));
 }
 
@@ -65,10 +72,10 @@ function displayMovies(movies) {
 function filterMovies() {
     const query = document.getElementById("search").value.toLowerCase();
 
-    fetch(apiURL)
+    fetch("movies.json")
         .then(res => res.json())
         .then(data => {
-            const filtered = data.filter(m =>
+            const filtered = data.movies.filter(m =>
                 m.title.toLowerCase().includes(query) ||
                 m.genre.toLowerCase().includes(query)
             );
